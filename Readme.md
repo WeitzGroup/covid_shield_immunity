@@ -1,13 +1,15 @@
-'Shield Immunity' project.
+'Shield Immunity' project
+===============================
+
 Joshua S. Weitz and collaborators, March 31, 2020
 School of Biological Sciences
 Georgia Institute of Technology
-===============================
 
 For MATLAB, add the helper files via an addpath command
-> addpath <directory name of helper files>
+"addpath (directory name)"
 
-License: CC-BY-4.0
+Figure License: CC-BY-4.0
+Code License: MIT
 
 Folder descriptions: 
 
