@@ -1,0 +1,1 @@
+Note STATE_DEMOG.R is a script to clean the data in PEP_2018_PEPSYASEX_with_ann.csv (you need to add this to this directory if you want to rerun) and produces STATE_DEMOG.csv which is used in the demography analysis.
