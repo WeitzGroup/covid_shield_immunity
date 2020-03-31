@@ -5,6 +5,8 @@ Joshua S. Weitz and collaborators, March 31, 2020
 School of Biological Sciences
 Georgia Institute of Technology
 
+Code in MATLAB, Julia, and R
+
 For MATLAB, add the helper files via an addpath command
 "addpath (directory name)"
 
