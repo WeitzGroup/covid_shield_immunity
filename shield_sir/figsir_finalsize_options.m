@@ -1,7 +1,7 @@
 clf
 % automatically create postscript whenever
 % figure is drawn
-tmpfilename = 'figsir_finalsize';
+tmpfilename = 'figsir_finalsize_options';
 tmpfilebwname = sprintf('%s_noname_bw',tmpfilename);
 tmpfilenoname = sprintf('%s_noname',tmpfilename);
 
@@ -24,33 +24,48 @@ set(gcf,'PaperPositionMode','auto');
 %clear pars
 pars.beta=0.25;
 pars.gamma=1/10;
-pars.alpha_range = [0:0.2:20];
+pars.alpha_range = [0:0.1:20];
 pars.R0=pars.beta/pars.gamma;
 y0 = [0.999 0.001 0];
 
-fid=fopen('basic_shields.mat');
-if (fid==-1)
+fid=fopen('hs_shields.mat');
+if (fid == -1)
+  more off
   for i=1:length(pars.alpha_range),
+    i
     pars.alpha=pars.alpha_range(i);
     opts=odeset('RelTol',1e-8,'MaxStep',0.01);
     [t,y]=ode45(@sir_shield,[0 300],y0,opts,pars);
     stats.finalsize(i)=y(end,3);
-    stats.I(i)=y(end,2);
     stats.Sfinal(i)=y(end,1);
+    [t,y]=ode45(@sir_shield_hard,[0 400],y0,opts,pars);
+    statshard.finalsize(i)=y(end,3);
+    statshard.Sfinal(i)=y(end,1);
+    [t,y]=ode45(@sir_shield_soft,[0 400],y0,opts,pars);
+    statssoft.finalsize(i)=y(end,3);
+    statssoft.Sfinal(i)=y(end,1);
   end
-  save basic_shields pars stats
-else
-  load basic_shields
+  save hs_shields pars stats statssoft statshard
+else 
+  load hs_shields
 end
-tmph=plot(pars.alpha_range,stats.Sfinal,'k--');
-set(tmph,'linewidth',3,'color',[0.5 0.5 0.5]);
-hold on
+%tmph=plot(pars.alpha_range,stats.Sfinal,'k--');
+%set(tmph,'linewidth',3,'color',[0.5 0.5 0.5]);
 tmph=plot(pars.alpha_range,stats.finalsize,'k-');
 set(tmph,'linewidth',3,'color','k');
+hold on
+tmph=plot(pars.alpha_range,statssoft.finalsize,'b-');
+set(tmph,'linewidth',3,'color','b');
+tmph=plot(pars.alpha_range,statshard.finalsize,'g-');
+set(tmph,'linewidth',3,'color','g');
 tmph=plot(pars.alpha_range,ones(size(pars.alpha_range))*(1-1/pars.R0),'k:');
 set(tmph,'linewidth',3,'color','k');
-tmpt=text(6,1-1.1/pars.R0,'Herd immunity threshold, $1-{\cal{R}}_0^{-1}$');
+tmpt=text(6,1-0.9/pars.R0,'Herd immunity threshold, $1-{\cal{R}}_0^{-1}$');
 set(tmpt,'interpreter','latex','fontsize',16);
+%tmph=plot(pars.alpha_range,ones(size(pars.alpha_range))*1/pars.R0,'k:');
+%%set(tmph,'linewidth',3,'color','k');
+%tmpt=text(6,1.1/pars.R0,'Herd immunity threshold, ${\cal{R}}_0^{-1}$');
+%set(tmpt,'interpreter','latex','fontsize',16);
 
 
 % loglog(,, '');
@@ -71,14 +86,13 @@ set(gca,'fontsize',20);
 % tmpv = axis;
 % axis([]);
 ylim([0 1]);
-xlim([0 20]);
-set(gca,'xtick',[0 2 5 10 15 20]);
+% xlim([]);
 
 % change axis line width (default is 0.5)
 % set(tmpa1,'linewidth',2)
 
 % fix up tickmarks
-% set(gca,'xtick',[1 100 10^4])
+set(gca,'xtick',[0 2 5 10 15 20]);
 % set(gca,'ytick',[1 100 10^4])
 
 % creation of postscript for papers
@@ -90,14 +104,14 @@ set(gca,'xtick',[0 2 5 10 15 20]);
 
 % legend
 % tmplh = legend('stuff',...);
-tmplh = legend('Uninfected, $S_{\infty}$', 'Epidemic size, $R_{\infty}$');
+tmplh = legend('Shielding model','Flexible shield mechanism','Fixed shield mechanism');
 set(tmplh,'interpreter','latex','fontsize',16,'location','northwest');
 % remove box
 % set(tmplh,'visible','off')
 legend('boxoff');
 
 xlabel('Shield strength, $\alpha$','fontsize',20,'verticalalignment','top','interpreter','latex');
-ylabel('Population fraction','fontsize',20,'verticalalignment','bottom','interpreter','latex');
+ylabel('Epidemic size, $R_{\infty}$','fontsize',20,'verticalalignment','bottom','interpreter','latex');
 % title('','fontsize',24)
 % 'horizontalalignment','left');
 
